@@ -1,0 +1,16 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "25YMMD6QE4.jp.ultrawarp.kagehinata",
+        "appIDs": ["25YMMD6QE4.jp.ultrawarp.kagehinata"],
+        "paths": ["/kagehinata/open", "/kagehinata/open/*"],
+        "components": [
+          { "/": "/kagehinata/open", "comment": "かげひなたの共有リンク" },
+          { "/": "/kagehinata/open/*", "comment": "かげひなたの共有リンク" }
+        ]
+      }
+    ]
+  }
+}

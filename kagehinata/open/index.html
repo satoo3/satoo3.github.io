@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>かげひなた｜共有された場所</title>
+<meta name="robots" content="noindex">
+<meta name="apple-itunes-app" content="app-id=6820483358">
+<!--
+  かげひなたの共有リンク（https://satoo3.github.io/kagehinata/open/?lat=..&lng=..&date=..&time=..&floor=..&window=..&name=..）。
+  アプリが入っていれば iPhone はこのページを開かずにアプリで開く（Universal Links。/.well-known/apple-app-site-association）。
+  アプリがないときや、ブラウザで直接開いたときに、このページで場所を見せて App Store へ案内する。
+-->
+<style>
+:root { --bg: #f5f7fb; --card: #fff; --text: #1d1d1f; --muted: #6e6e73; --blue: #1e7bff; --line: #e5e5ea; }
+@media (prefers-color-scheme: dark) { :root { --bg: #111318; --card: #1c1f26; --text: #f2f2f7; --muted: #a1a1aa; --blue: #4c9bff; --line: #2c2f36; } }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif; line-height: 1.7; }
+main { max-width: 520px; margin: 0 auto; padding: 32px 16px 48px; }
+.head { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+.head img { width: 64px; height: 64px; border-radius: 15px; box-shadow: 0 6px 18px rgba(30, 90, 180, 0.25); }
+.head h1 { margin: 0; font-size: 22px; line-height: 1.3; }
+.head p { margin: 2px 0 0; color: var(--muted); font-size: 13px; }
+.card { background: var(--card); border-radius: 18px; padding: 18px 20px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06); }
+.card h2 { margin: 0 0 8px; font-size: 20px; line-height: 1.4; }
+dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 15px; }
+dt { color: var(--muted); white-space: nowrap; }
+dd { margin: 0; overflow-wrap: anywhere; }
+.buttons { display: grid; gap: 10px; margin-top: 20px; }
+.btn { display: block; text-align: center; padding: 13px 16px; border-radius: 999px; font-weight: 700; font-size: 16px; text-decoration: none; }
+.primary { background: var(--blue); color: #fff; }
+.ghost { background: var(--card); color: var(--blue); border: 1px solid var(--line); }
+.note { color: var(--muted); font-size: 12px; margin-top: 20px; }
+.empty { color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <div class="head">
+    <img src="https://www.ultrawarp.jp/wp-content/uploads/2026/10/kagehinata-icon.png" alt="">
+    <div>
+      <h1 data-ja="かげひなた" data-en="Kagehinata">かげひなた</h1>
+      <p data-ja="日当たり・日影を地図でしらべる iPhone アプリ" data-en="An iPhone app that shows sunlight and shade on the map">日当たり・日影を地図でしらべる iPhone アプリ</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 id="name" data-ja="共有された場所" data-en="Shared place">共有された場所</h2>
+    <dl id="info"></dl>
+    <p id="empty" class="empty" hidden data-ja="場所の情報が読みとれませんでした。" data-en="Couldn’t read the place from this link.">場所の情報が読みとれませんでした。</p>
+  </div>
+
+  <div class="buttons">
+    <a id="openApp" class="btn primary" href="#" data-ja="かげひなたで開く" data-en="Open in Kagehinata">かげひなたで開く</a>
+    <a id="store" class="btn ghost" href="https://apps.apple.com/jp/app/id6820483358" data-ja="App Store で入手（無料）" data-en="Get it on the App Store (free)">App Store で入手（無料）</a>
+    <a id="gmap" class="btn ghost" href="#" data-ja="Google マップで場所を見る" data-en="See the place in Google Maps">Google マップで場所を見る</a>
+  </div>
+
+  <p class="note" data-ja="アプリが入っていない場合は、App Store から入れたあと、もう一度このリンクを開いてください。表示は天文計算と公開データによる目安で、正確さを保証するものではありません。" data-en="If you don’t have the app, install it from the App Store and open this link again. The information is an estimate based on astronomical calculations and open data, and its accuracy is not guaranteed.">アプリが入っていない場合は、App Store から入れたあと、もう一度このリンクを開いてください。表示は天文計算と公開データによる目安で、正確さを保証するものではありません。</p>
+</main>
+<script>
+(function () {
+  var ja = (navigator.languages || [navigator.language]).some(function (l) { return /^ja/i.test(l || ''); });
+  document.documentElement.lang = ja ? 'ja' : 'en';
+  document.querySelectorAll('[data-ja]').forEach(function (el) { el.textContent = el.getAttribute(ja ? 'data-ja' : 'data-en'); });
+  if (!ja) {
+    document.title = 'Kagehinata | Shared place';
+    document.getElementById('store').href = 'https://apps.apple.com/app/id6820483358';
+  }
+
+  var q = new URLSearchParams(location.search);
+  var lat = Number(q.get('lat')), lng = Number(q.get('lng'));
+  var ok = q.get('lat') && q.get('lng') && isFinite(lat) && isFinite(lng) && Math.abs(lat) <= 90 && Math.abs(lng) <= 180;
+  if (!ok) {
+    document.getElementById('empty').hidden = false;
+    document.getElementById('openApp').hidden = true;
+    document.getElementById('gmap').hidden = true;
+    return;
+  }
+  // アプリ専用の URL でも開けるように（このページをブラウザで直接開いたときなど）
+  document.getElementById('openApp').href = 'kagehinata://open?' + q.toString();
+  document.getElementById('gmap').href = 'https://www.google.com/maps/search/?api=1&query=' + lat.toFixed(6) + ',' + lng.toFixed(6);
+
+  var name = q.get('name');
+  if (name) document.getElementById('name').textContent = name;
+  var DIRS = ja
+    ? ['北', '北北東', '北東', '東北東', '東', '東南東', '南東', '南南東', '南', '南南西', '南西', '西南西', '西', '西北西', '北西', '北北西']
+    : ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
+  var rows = [];
+  var date = q.get('date'), time = q.get('time');
+  if (date && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    var p = date.split('-').map(Number);
+    var d = ja ? p[0] + '年' + p[1] + '月' + p[2] + '日' : new Date(Date.UTC(p[0], p[1] - 1, p[2])).toLocaleDateString('en-US', { timeZone: 'UTC', year: 'numeric', month: 'short', day: 'numeric' });
+    rows.push([ja ? '日時' : 'Date', d + (time ? ' ' + time : '')]);
+  }
+  var room = [];
+  var floor = q.get('floor');
+  if (floor === 'roof') room.push(ja ? '屋上' : 'Rooftop');
+  else if (floor && /^\d+$/.test(floor)) room.push(ja ? floor + '階' : 'Floor ' + floor);
+  var win = q.get('window');
+  if (win && /^-?\d+(\.\d+)?$/.test(win)) {
+    var dir = DIRS[Math.round((((Number(win) % 360) + 360) % 360) / 22.5) % 16];
+    room.push(ja ? dir + '向きの窓' : dir + '-facing window');
+  }
+  if (room.length) rows.push([ja ? '部屋' : 'Room', room.join(ja ? '・' : ' · ')]);
+  rows.push([ja ? '緯度経度' : 'Lat, Lng', lat.toFixed(6) + ', ' + lng.toFixed(6)]);
+  var dl = document.getElementById('info');
+  rows.forEach(function (r) {
+    var dt = document.createElement('dt'); dt.textContent = r[0];
+    var dd = document.createElement('dd'); dd.textContent = r[1];
+    dl.appendChild(dt); dl.appendChild(dd);
+  });
+})();
+</script>
+</body>
+</html>
